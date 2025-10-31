@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ninja Ball Annihilator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <!-- HUD (Heads-Up Display) -->
+        <div id="hud" class="hud">
+            <div class="stats">
+                <span>Level: <span id="level">1</span></span>
+                <span>Score: <span id="score">0</span></span>
+                <span>Wave: <span id="wave">1</span></span>
+                <span>Health: <span id="health">100</span>%</span>
+            </div>
+            <div class="weapon">Weapon: <span id="weapon">Sword</span></div>
+        </div>
+        
+        <!-- Shop UI (hidden initially) -->
+        <div id="shop" class="shop hidden">
+            <h2>Shadow Armory</h2>
+            <p>Points: <span id="shopScore">0</span></p>
+            <div class="items">
+                <button class="item" data-weapon="sword" data-cost="0">Sword (Free)</button>
+                <button class="item" data-weapon="pistol" data-cost="50">Pistol (+50 dmg, $50)</button>
+                <button class="item" data-weapon="shotgun" data-cost="150">Shotgun (AOE, $150)</button>
+                <button class="item" data-weapon="laser" data-cost="300">Laser (Pierce, $300)</button>
+            </div>
+            <button id="startBtn">Enter Shadows</button>
+        </div>
+        
+        <!-- Game Over Overlay -->
+        <div id="gameOver" class="overlay hidden">
+            <h2>Shadows Claimed You</h2>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <button id="restartBtn">Reborn</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
