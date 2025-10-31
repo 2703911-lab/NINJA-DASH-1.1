@@ -40,28 +40,42 @@ const player = {
 window.addEventListener('keydown', (e) => { keys[e.key.toLowerCase()] = true; });
 window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
 
-// Shop events
-document.querySelectorAll('.item').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const w = btn.dataset.weapon;
-        const cost = parseInt(btn.dataset.cost);
-        if (points >= cost) {
-            points -= cost;
-            weapon = w;
-            document.getElementById('weapon').textContent = w.charAt(0).toUpperCase() + w.slice(1);
-            updateShopScore();
-            // Visual feedback
-            btn.classList.add('active');
-            setTimeout(() => btn.classList.remove('active'), 500);
-        }
+// Wait for DOM to load before attaching events
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded—attaching events'); // Debug log
+
+    // Shop events
+    document.querySelectorAll('.item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const w = btn.dataset.weapon;
+            const cost = parseInt(btn.dataset.cost);
+            if (points >= cost) {
+                points -= cost;
+                weapon = w;
+                document.getElementById('weapon').textContent = w.charAt(0).toUpperCase() + w.slice(1);
+                updateShopScore();
+                // Visual feedback
+                btn.classList.add('active');
+                setTimeout(() => btn.classList.remove('active'), 500);
+            }
+        });
     });
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+        console.log('Start button clicked! Diving in...'); // Debug
+        startGame();
+    });
+
+    document.getElementById('restartBtn').addEventListener('click', restartGame);
+
+    // Init HUD
+    updateHUD();
 });
 
-document.getElementById('startBtn').addEventListener('click', startGame);
-document.getElementById('restartBtn').addEventListener('click', restartGame);
-
-// Game loop
-function gameLoop(timestamp) {
+// Game loop (with explicit first timestamp)
+let animationId;
+function gameLoop(timestamp = 0) { // Default 0 for first call
+    console.log('Game loop tick:', gameState, timestamp); // Debug—remove later if spammy
     CTX.clearRect(0, 0, WIDTH, HEIGHT);
     
     if (gameState === 'playing') {
@@ -72,7 +86,7 @@ function gameLoop(timestamp) {
         updateParticles();
         checkCollisions();
         waveTimer++;
-        if (waveTimer > 10000) { // ~10s per wave
+        if (waveTimer > 10000) { // ~10s per wave (adjust for FPS)
             wave++;
             if (wave % 10 === 0) level++;
             if (level % 5 === 0 && !boss) spawnBoss();
@@ -83,7 +97,7 @@ function gameLoop(timestamp) {
         updateHUD();
     }
     
-    requestAnimationFrame(gameLoop);
+    animationId = requestAnimationFrame(gameLoop);
 }
 
 // Player movement
@@ -95,9 +109,9 @@ function updatePlayer() {
     
     // Auto-attack nearest enemy
     const nearest = findNearestEnemy();
-    if (nearest && timestamp - player.lastShot > WEAPONS[weapon].rate) {
+    if (nearest && Date.now() - player.lastShot > WEAPONS[weapon].rate) { // Use Date.now() for reliability
         shoot(nearest);
-        player.lastShot = timestamp;
+        player.lastShot = Date.now();
     }
 }
 
@@ -126,6 +140,7 @@ function spawnBoss() {
         health: 200 + level * 50, maxHealth: 200 + level * 50,
         color: '#900' // Dark red
     };
+    console.log('Boss spawned—level', level); // Debug
 }
 
 // Update enemies (chase player)
@@ -138,20 +153,19 @@ function updateEnemies(timestamp) {
             e.x += (dx / dist) * e.speed;
             e.y += (dy / dist) * e.speed;
         }
-        // Boss slower chase
-        if (boss) {
-            const bdx = player.x - boss.x;
-            const bdy = player.y - boss.y;
-            const bdist = Math.sqrt(bdx*bdx + bdy*bdy);
-            if (bdist > 0) {
-                boss.x += (bdx / bdist) * boss.speed;
-                boss.y += (bdy / bdist) * boss.speed;
-            }
-        }
         // Remove off-screen
-        if (e.y > HEIGHT + 50) enemies.splice(i, 1);
+        if (e.y > HEIGHT + 50 || e.x < -50 || e.x > WIDTH + 50) enemies.splice(i, 1);
     });
-    if (boss && boss.y > HEIGHT + 50) boss = null;
+    if (boss) {
+        const bdx = player.x - boss.x;
+        const bdy = player.y - boss.y;
+        const bdist = Math.sqrt(bdx*bdx + bdy*bdy);
+        if (bdist > 0) {
+            boss.x += (bdx / bdist) * boss.speed;
+            boss.y += (bdy / bdist) * boss.speed;
+        }
+        if (boss.y > HEIGHT + 50) boss = null;
+    }
 }
 
 // Shooting
@@ -220,7 +234,7 @@ function checkCollisions() {
         enemies.forEach((e, ei) => {
             const dx = b.x - e.x;
             const dy = b.y - e.y;
-            if (Math.sqrt(dx*dx + dy*dy) < e.size) {
+            if (Math.sqrt(dx*dx + dy*dy) < e.size + 3) { // +bullet size
                 e.health -= b.damage;
                 bullets.splice(bi, 1);
                 if (e.health <= 0) {
@@ -228,13 +242,14 @@ function checkCollisions() {
                     createParticles(e.x, e.y, 5, '#f00');
                     enemies.splice(ei, 1);
                 }
+                return; // Stop checking this bullet
             }
         });
-        // Boss
+        // Boss hit
         if (boss) {
             const dx = b.x - boss.x;
             const dy = b.y - boss.y;
-            if (Math.sqrt(dx*dx + dy*dy) < boss.size) {
+            if (Math.sqrt(dx*dx + dy*dy) < boss.size + 3) {
                 boss.health -= b.damage;
                 bullets.splice(bi, 1);
                 if (boss.health <= 0) {
@@ -243,6 +258,7 @@ function checkCollisions() {
                     boss = null;
                     level++;
                 }
+                return;
             }
         }
     });
@@ -371,6 +387,7 @@ function updateShopScore() {
 
 // Game state functions
 function startGame() {
+    console.log('startGame called—state to playing'); // Debug
     gameState = 'playing';
     document.getElementById('shop').classList.add('hidden');
     health = 100;
@@ -381,18 +398,25 @@ function startGame() {
     wave = 1;
     waveTimer = 0;
     lastSpawn = 0;
+    // Cancel any old loop, start fresh
+    if (animationId) cancelAnimationFrame(animationId);
+    requestAnimationFrame(gameLoop);
 }
 
 function endGame() {
+    console.log('Game over—health 0'); // Debug
     gameState = 'gameOver';
     points = score; // Carry over score to shop
     updateShopScore();
     document.getElementById('finalScore').textContent = score;
     document.getElementById('gameOver').classList.remove('hidden');
     document.getElementById('shop').classList.remove('hidden');
+    // Pause loop
+    if (animationId) cancelAnimationFrame(animationId);
 }
 
 function restartGame() {
+    console.log('Restart—back to shop'); // Debug
     score = 0;
     level = 1;
     wave = 1;
@@ -406,9 +430,13 @@ function restartGame() {
     updateHUD();
     updateShopScore();
     document.getElementById('gameOver').classList.add('hidden');
-    startGame(); // Back to shop? Or direct play—tweak as needed
+    gameState = 'shop';
+    document.getElementById('shop').classList.remove('hidden');
+    // Restart loop if needed, but since shop, it's paused
 }
 
-// Init
-updateHUD();
-requestAnimationFrame(gameLoop);
+// Init loop after DOM—moved here
+window.addEventListener('DOMContentLoaded', () => {
+    // ... (events above)
+    requestAnimationFrame(gameLoop); // Start loop
+});
