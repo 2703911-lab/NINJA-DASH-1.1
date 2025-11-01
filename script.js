@@ -1,4 +1,9 @@
 // Game config
+// === DEBUG: Force canvas to draw something ===
+CTX.fillStyle = '#0f0';
+CTX.font = '30px Courier New';
+CTX.fillText('NINJA DASH LOADING...', 200, 300);
+
 const CANVAS = document.getElementById('gameCanvas');
 const CTX = CANVAS.getContext('2d');
 const WIDTH = CANVAS.width;
