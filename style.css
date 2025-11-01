@@ -1,13 +1,10 @@
-/* Existing + NEW */
-.progress-bar {
-    /* === CRITICAL FIX: CONTAINER & CANVAS === */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body, html {
-    margin: 0;
-    padding: 0;
     background: #000;
-    overflow: hidden;
     font-family: 'Courier New', monospace;
     color: #0f0;
+    overflow: hidden;
+    height: 100%;
 }
 
 .container {
@@ -25,24 +22,34 @@ body, html {
 #gameCanvas {
     position: absolute;
     top: 0; left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     display: block;
 }
+
+/* HUD */
+.hud {
     position: absolute;
-    top: 60px;
-    left: 10px;
-    width: 200px;
-    height: 20px;
+    top: 10px; left: 10px;
+    color: #0f0;
+    font-size: 16px;
+    text-shadow: 0 0 5px #0f0;
+    pointer-events: none;
+}
+
+/* Progress Bar */
+.progress-bar {
+    position: absolute;
+    top: 60px; left: 10px;
+    width: 200px; height: 20px;
     background: #111;
     border: 2px solid #0f0;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 0 15px #0f0;
     color: #0f0;
     font-size: 12px;
     text-align: center;
     line-height: 20px;
+    pointer-events: none;
 }
 .progress-fill {
     height: 100%;
@@ -51,52 +58,100 @@ body, html {
     box-shadow: 0 0 10px #0f0;
 }
 
-.hotbar {
+/* Health Bar */
+.health-bar {
     position: absolute;
-    bottom: 20px;
-    left: 50%;
+    bottom: 70px; left: 50%;
     transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    background: rgba(0,0,0,0.8);
-    padding: 10px;
+    width: 300px; height: 20px;
+    background: #111;
     border: 2px solid #f00;
     border-radius: 10px;
+    overflow: hidden;
+}
+.health-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #0f0, #0f0);
+    transition: width 0.2s;
+    box-shadow: 0 0 10px #0f0;
+}
+.health-fill.low { background: linear-gradient(90deg, #f00, #f80); }
+
+/* Hotbar */
+.hotbar {
+    position: absolute;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 10px;
+    padding: 10px;
+    background: rgba(0,0,0,0.8);
+    border: 2px solid #f00;
+    border-radius: 10px;
+    pointer-events: auto;
 }
 .hotkey {
-    width: 40px;
-    height: 40px;
-    background: #111;
-    color: #0f0;
+    width: 40px; height: 40px;
+    background: #111; color: #0f0;
     border: 1px solid #0f0;
     border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; cursor: pointer;
+    transition: 0.2s;
 }
 .hotkey.active {
-    background: #0f0;
-    color: #000;
+    background: #0f0; color: #000;
     box-shadow: 0 0 15px #0f0;
 }
-.powerups {
-    display: flex;
-    gap: 5px;
-}
 .powerup-icon {
-    width: 30px;
-    height: 30px;
+    width: 30px; height: 30px;
     border-radius: 50%;
     border: 2px solid #ff0;
-    background: #ff0;
     cursor: pointer;
-    transition: all 0.2s;
 }
 .powerup-icon.speed { background: #00f; }
 .powerup-icon.shield { background: #0ff; }
 .powerup-icon.bomb { background: #f00; }
 
-.overlay h2 { color: #f00; text-shadow: 0 0 10px #f00; }
+/* Shop & Overlays */
+.shop, .overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.95);
+    padding: 25px;
+    border: 2px solid #f00;
+    border-radius: 15px;
+    text-align: center;
+    pointer-events: auto;
+    min-width: 300px;
+}
+.shop h2, .overlay h2 {
+    color: #f00;
+    text-shadow: 0 0 10px #f00;
+    margin-bottom: 15px;
+}
+.item {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px;
+    background: #111;
+    border: 1px solid #0f0;
+    color: #0f0;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.item:hover { background: #0f0; color: #000; }
+
+button {
+    background: #f00; color: #fff;
+    border: none; padding: 12px 24px;
+    margin: 10px; cursor: pointer;
+    border-radius: 5px; font-weight: bold;
+    transition: 0.2s;
+}
+button:hover { background: #0f0; color: #000; }
+
+.hidden { display: none; }
