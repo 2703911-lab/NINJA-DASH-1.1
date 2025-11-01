@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ninja Ball Annihilator</title>
+    <title>Ninja Ball Annihilator - Ultimate</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         
-        <!-- HUD (Heads-Up Display) -->
+        <!-- HUD -->
         <div id="hud" class="hud">
             <div class="stats">
                 <span>Level: <span id="level">1</span></span>
@@ -20,9 +20,29 @@
             </div>
             <div class="weapon">Weapon: <span id="weapon">Sword</span></div>
         </div>
-        
-        <!-- Shop UI (hidden initially) -->
-        <div id="shop" class="shop">
+
+        <!-- Level Progress Bar -->
+        <div id="levelBar" class="progress-bar">
+            <div class="progress-fill" id="levelFill"></div>
+            <span>Level Progress</span>
+        </div>
+
+        <!-- Health Bar -->
+        <div class="health-bar">
+            <div class="health-fill" id="healthFill"></div>
+        </div>
+
+        <!-- Hotbar (Bottom) -->
+        <div id="hotbar" class="hotbar">
+            <div class="hotkey" data-weapon="sword">1</div>
+            <div class="hotkey" data-weapon="pistol">2</div>
+            <div class="hotkey" data-weapon="shotgun">3</div>
+            <div class="hotkey" data-weapon="laser">4</div>
+            <div class="powerups" id="powerupsUI"></div>
+        </div>
+
+        <!-- Shop UI -->
+        <div id="shop" class="shop hidden">
             <h2>Shadow Armory</h2>
             <p>Points: <span id="shopScore">0</span></p>
             <div class="items">
@@ -33,12 +53,28 @@
             </div>
             <button id="startBtn">Enter Shadows</button>
         </div>
-        
-        <!-- Game Over Overlay -->
+
+        <!-- Game Over -->
         <div id="gameOver" class="overlay hidden">
             <h2>Shadows Claimed You</h2>
             <p>Final Score: <span id="finalScore">0</span></p>
             <button id="restartBtn">Reborn</button>
+        </div>
+
+        <!-- Pause Menu (ESC) -->
+        <div id="pauseMenu" class="overlay hidden">
+            <h2>Shadow Menu</h2>
+            <button id="settingsBtn">Settings</button>
+            <button id="saveBtn">Save Progress</button>
+            <button id="leaveBtn">Leave Game</button>
+            <button id="resumeBtn">Resume</button>
+        </div>
+
+        <!-- Settings (Simple - volume toggle later) -->
+        <div id="settings" class="overlay hidden">
+            <h2>Settings</h2>
+            <p>More coming soon...</p>
+            <button id="backBtn">Back</button>
         </div>
     </div>
     
