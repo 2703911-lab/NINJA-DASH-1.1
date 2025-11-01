@@ -1,132 +1,73 @@
-body {
-    margin: 0;
-    padding: 0;
-    background: #000;
-    color: #0f0; /* Neon green */
-    font-family: 'Courier New', monospace;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
-.container {
-    position: relative;
-    border: 2px solid #f00; /* Neon red border */
-    border-radius: 10px;
-    box-shadow: 0 0 20px #f00, inset 0 0 20px rgba(0,0,0,0.5);
-}
-
-#gameCanvas {
-    background: radial-gradient(circle, #111 0%, #000 100%);
-    display: block;
-    border-radius: 8px;
-}
-
-.hud {
+/* Existing + NEW */
+.progress-bar {
     position: absolute;
-    top: 10px;
+    top: 60px;
     left: 10px;
-    right: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0,0,0,0.7);
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #f00;
-    font-size: 14px;
-}
-
-.stats span {
-    margin-right: 20px;
-    text-shadow: 0 0 5px #0f0;
-}
-
-.weapon {
-    text-shadow: 0 0 5px #00f; /* Blue for weapon */
-}
-
-.shop {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.9);
-    border: 2px solid #f00;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 0 30px #f00;
-    z-index: 10;
-}
-
-.shop h2 {
-    color: #f00;
-    text-shadow: 0 0 10px #f00;
-    margin-bottom: 10px;
-}
-
-.items {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 20px 0;
-}
-
-.item {
+    width: 200px;
+    height: 20px;
     background: #111;
+    border: 2px solid #0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 15px #0f0;
     color: #0f0;
-    border: 1px solid #0f0;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s;
+    font-size: 12px;
+    text-align: center;
+    line-height: 20px;
 }
-
-.item:hover, .item.active {
-    background: #0f0;
-    color: #000;
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0f0, #00f);
+    transition: width 0.3s;
     box-shadow: 0 0 10px #0f0;
 }
 
-#startBtn, #restartBtn {
-    background: #f00;
-    color: #000;
-    border: none;
-    padding: 10px 20px;
+.hotbar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    background: rgba(0,0,0,0.8);
+    padding: 10px;
+    border: 2px solid #f00;
+    border-radius: 10px;
+}
+.hotkey {
+    width: 40px;
+    height: 40px;
+    background: #111;
+    color: #0f0;
+    border: 1px solid #0f0;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
-    text-shadow: none;
-    transition: background 0.3s;
-}
-
-#startBtn:hover, #restartBtn:hover {
-    background: #0f0;
-}
-
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.8);
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    z-index: 20;
+    justify-content: center;
+    font-weight: bold;
+    transition: all 0.2s;
 }
+.hotkey.active {
+    background: #0f0;
+    color: #000;
+    box-shadow: 0 0 15px #0f0;
+}
+.powerups {
+    display: flex;
+    gap: 5px;
+}
+.powerup-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #ff0;
+    background: #ff0;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.powerup-icon.speed { background: #00f; }
+.powerup-icon.shield { background: #0ff; }
+.powerup-icon.bomb { background: #f00; }
 
-.overlay h2 {
-    color: #f00;
-    text-shadow: 0 0 10px #f00;
-    margin-bottom: 10px;
-}
-
-.hidden {
-    display: none !important;
-}
+.overlay h2 { color: #f00; text-shadow: 0 0 10px #f00; }
